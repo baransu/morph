@@ -1,9 +1,4 @@
 /**
-[headers] is represented as a list of (string, string) tuples.
-*/
-type headers = list((string, string));
-
-/**
  [Response.body] variant type structure. There are currently 3 types of bodies.
 
  [`String] Use a simple string as body
@@ -26,14 +21,14 @@ The core [Response.t] type
 */
 type t = {
   status: Status.t,
-  headers,
+  headers: Headers.t,
   body,
 };
 
 /**
 [make status headers body] creates a response.
 */
-let make: (~status: Status.t=?, ~headers: headers=?, body) => t;
+let make: (~status: Status.t=?, ~headers: Headers.t=?, body) => t;
 
 /**
 [empty t] an empty response, a starting place to compose an http response.
@@ -48,7 +43,7 @@ let add_header: ((string, string), t) => t;
 /**
 [add_header headers response] returns a copy of t of response with the headers added.
 */
-let add_headers: (headers, t) => t;
+let add_headers: (list((string, string)), t) => t;
 
 /**
 [set_status status response] returns a copy of t with the given status.

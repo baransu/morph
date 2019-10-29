@@ -117,6 +117,17 @@
   ))
 
 (package
+  (name morph_logger)
+  (depends
+    (ocaml (>= 4.04.2))
+    (dune (>= 1.11))
+    reason
+    lwt
+    mtime
+    logs
+    morph))
+
+(package
   (name morph_test)
   (depends
     (ocaml (>= 4.04.2))

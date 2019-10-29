@@ -1,4 +1,3 @@
-type headers = list((string, string));
 
 type body = [
   | `String(string)
@@ -8,20 +7,20 @@ type body = [
 
 type t = {
   status: Status.t,
-  headers,
+  headers: Headers.t,
   body,
 };
 
-let empty = {status: `OK, headers: [], body: `String("")};
+let empty = {status: `OK, headers: Headers.empty, body: `String("")};
 
-let make = (~status=`OK, ~headers=[], body) => {status, headers, body};
+let make = (~status=`OK, ~headers=Headers.empty, body) => {status, headers, body};
 
 let add_header = (new_header: (string, string), res: t) => {
-  {...res, headers: res.headers @ [new_header]};
+  {...res, headers: res.headers |> Headers.add_header(new_header)};
 };
 
-let add_headers = (new_headers: headers, res: t) => {
-  {...res, headers: res.headers @ new_headers};
+let add_headers = (new_headers: list((string, string)), res: t) => {
+  {...res, headers: res.headers |> Headers.add_headers(new_headers)};
 };
 
 let set_status = (status: Status.t, res: t) => {
@@ -33,7 +32,8 @@ let set_body = (body: body, res: t) => {
 };
 
 let ok = (res: t) => {
-  add_header(("Content-length", "2"), res)
+  res 
+  |> add_header(("Content-length", "2"))
   |> set_status(`OK)
   |> set_body(`String("ok"))
   |> Lwt.return;
@@ -41,14 +41,18 @@ let ok = (res: t) => {
 
 let text = (text, res: t) => {
   let content_length = text |> String.length |> string_of_int;
-  add_header(("Content-length", content_length), res)
+
+  res
+  |> add_header(("Content-length", content_length))
   |> set_body(`String(text))
   |> Lwt.return;
 };
 
 let json = (json, res: t) => {
   let content_length = json |> String.length |> string_of_int;
-  add_header(("Content-type", "application/json"), res)
+
+  res
+  |> add_header(("Content-type", "application/json"))
   |> add_header(("Content-length", content_length))
   |> set_body(`String(json))
   |> Lwt.return;
@@ -56,7 +60,9 @@ let json = (json, res: t) => {
 
 let html = (markup, res: t) => {
   let content_length = markup |> String.length |> string_of_int;
-  add_header(("Content-type", "text/html"), res)
+
+  res 
+  |> add_header(("Content-type", "text/html"))
   |> add_header(("Content-length", content_length))
   |> set_body(`String(markup))
   |> Lwt.return;
@@ -65,7 +71,8 @@ let html = (markup, res: t) => {
 let redirect = (~code=303, targetPath, res: t) => {
   let content_length = targetPath |> String.length |> string_of_int;
 
-  add_header(("Content-length", content_length), res)
+  res 
+  |> add_header(("Content-length", content_length))
   |> add_header(("Location", targetPath))
   |> set_status(`Code(code))
   |> set_body(`String(targetPath))
@@ -73,20 +80,16 @@ let redirect = (~code=303, targetPath, res: t) => {
 };
 
 let unauthorized = (message, res: t) => {
-  add_header(
-    ("Content-length", String.length(message) |> string_of_int),
-    res,
-  )
+  res
+  |> add_header(("Content-length", String.length(message) |> string_of_int))
   |> set_status(`Unauthorized)
   |> set_body(`String(message))
   |> Lwt.return;
 };
 
 let not_found = (~message="Not found", res: t) => {
-  add_header(
-    ("content-length", String.length(message) |> string_of_int),
-    res,
-  )
+  res 
+  |> add_header(("content-length", String.length(message) |> string_of_int))
   |> set_status(`Not_found)
   |> set_body(`String(message))
   |> Lwt.return;

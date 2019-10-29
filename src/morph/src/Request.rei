@@ -1,7 +1,7 @@
 type t = {
   target: string,
   meth: Method.t,
-  headers: list((string, string)),
+  headers: Headers.t,
   read_body: unit => Lwt.t(string),
   context: Hmap.t,
 };
@@ -9,7 +9,7 @@ type t = {
 let make:
   (
     ~meth: Method.t=?,
-    ~headers: list((string, string))=?,
+    ~headers: Headers.t=?,
     ~read_body: unit => Lwt.t(string)=?,
     ~context: Hmap.t=?,
     string

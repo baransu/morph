@@ -1,0 +1,4 @@
+(library
+ (name morph_logger)
+ (public_name morph_logger)
+ (libraries lwt morph mtime mtime.clock.os))

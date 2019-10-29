@@ -1,0 +1,26 @@
+{
+  "name": "@reason-native-web/morph_logger",
+  "version": "0.1.2",
+  "esy": {
+    "build": "dune build -p morph_logger",
+    "buildEnv": {
+      "ODOC_SYNTAX": "re"
+    }
+  },
+  "scripts": {
+    "format": "dune build @fmt --auto-promote"
+  },
+  "dependencies": {
+    "@opam/dune": "*",
+    "@opam/lwt": "*",
+    "@opam/mtime": "*",
+    "@opam/logs": "*",
+    "@reason-native-web/morph": "*",
+    "ocaml": "< 4.09.0",
+    "@esy-ocaml/reason": "*"
+  },
+  "resolutions": {
+    "@reason-native-web/morph": "link:./morph.json"
+  },
+  "devDependencies": {}
+}
