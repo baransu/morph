@@ -9,8 +9,6 @@ let get_header = (key, headers) =>
      )
   |> Utils.map_opt(snd);
 
-let add_header = (new_header, headers) => 
-  headers @ [new_header];
+let add_header = (new_header, headers) => headers @ [new_header];
 
-let add_headers = (new_headers, headers: t) =>
-  headers @ new_headers;
+let add_headers = (new_headers, headers: t) => headers @ new_headers;

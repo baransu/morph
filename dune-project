@@ -118,6 +118,7 @@
 
 (package
   (name morph_logger)
+  (synopsis "Logging middleware for morph")
   (depends
     (ocaml (>= 4.04.2))
     (dune (>= 1.11))

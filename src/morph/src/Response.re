@@ -1,4 +1,3 @@
-
 type body = [
   | `String(string)
   | `Stream(Lwt_stream.t(char))
@@ -13,7 +12,11 @@ type t = {
 
 let empty = {status: `OK, headers: Headers.empty, body: `String("")};
 
-let make = (~status=`OK, ~headers=Headers.empty, body) => {status, headers, body};
+let make = (~status=`OK, ~headers=Headers.empty, body) => {
+  status,
+  headers,
+  body,
+};
 
 let add_header = (new_header: (string, string), res: t) => {
   {...res, headers: res.headers |> Headers.add_header(new_header)};
@@ -32,7 +35,7 @@ let set_body = (body: body, res: t) => {
 };
 
 let ok = (res: t) => {
-  res 
+  res
   |> add_header(("Content-length", "2"))
   |> set_status(`OK)
   |> set_body(`String("ok"))
@@ -61,7 +64,7 @@ let json = (json, res: t) => {
 let html = (markup, res: t) => {
   let content_length = markup |> String.length |> string_of_int;
 
-  res 
+  res
   |> add_header(("Content-type", "text/html"))
   |> add_header(("Content-length", content_length))
   |> set_body(`String(markup))
@@ -71,7 +74,7 @@ let html = (markup, res: t) => {
 let redirect = (~code=303, targetPath, res: t) => {
   let content_length = targetPath |> String.length |> string_of_int;
 
-  res 
+  res
   |> add_header(("Content-length", content_length))
   |> add_header(("Location", targetPath))
   |> set_status(`Code(code))
@@ -88,7 +91,7 @@ let unauthorized = (message, res: t) => {
 };
 
 let not_found = (~message="Not found", res: t) => {
-  res 
+  res
   |> add_header(("content-length", String.length(message) |> string_of_int))
   |> set_status(`Not_found)
   |> set_body(`String(message))

@@ -1,4 +1,3 @@
-
 let get_or_else = default =>
   fun
   | None => default
@@ -98,9 +97,6 @@ and token =
   | UserAgent
   | Date(Date.format);
 
-
-
-
 let rec print =
         (
           ~response_time,
@@ -140,13 +136,19 @@ let rec print =
          | Status => response.status |> Morph.Status.to_code |> string_of_int
          | Method => request.meth |> Morph.Method.to_string
          | ResHeader(header) =>
-           response.headers |> Morph.Headers.get_header(header) |> get_or_else("-")
+           response.headers
+           |> Morph.Headers.get_header(header)
+           |> get_or_else("-")
          | ReqHeader(header) =>
-           request.headers |> Morph.Headers.get_header(header) |> get_or_else("-")
+           request.headers
+           |> Morph.Headers.get_header(header)
+           |> get_or_else("-")
          | S(separator) => separator
          | ResponseTime => response_time |> string_of_float
          | UserAgent =>
-           request.headers |> Morph.Headers.get_header("user-agent") |> get_or_else("-")
+           request.headers
+           |> Morph.Headers.get_header("user-agent")
+           |> get_or_else("-")
          | Date(format) => Date.print(format),
        )
     |> List.fold_left((acc, item) => acc ++ " " ++ item, "")
